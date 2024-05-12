@@ -19,7 +19,7 @@ echo -e -n "${GREEN_BLINK}[+] ${YELLOW_BOLD}Enter Account ID: ${RESET}"
 read account_id
 
 # Check if there are any active sessions
-caller_identity=$(aws sts get-caller-identity &> /dev/null)
+caller_identity=$(aws sts get-caller-identity)
 if [ -z "$caller_identity" ]; then
     echo -e "${RED_BOLD}[!] Error: No Active Sessions!${RESET}"
 else
