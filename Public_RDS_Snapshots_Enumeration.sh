@@ -38,6 +38,5 @@ if aws iam list-access-keys --query "AccessKeyMetadata[?Status=='Active'].Access
 		aws rds describe-db-cluster-snapshots --snapshot-type public --include-public --region $region | grep $account_id; 
 	done     
 else
-    echo "."
     echo -e -n "${RED_BOLD}[!] No active sessions found! ${RESET}"
 fi
