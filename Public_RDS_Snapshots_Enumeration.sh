@@ -10,6 +10,8 @@ GREEN='\033[1;32m'
 GREEN_BLINK='\033[5;32m'
 YELLOW='\033[0;33m'
 YELLOW_BOLD='\033[1;33m'
+CYAN='\033[1;36m'
+WHITE_BOLD='\033[1;77m'
 RESET='\033[0m'
 
 # Specify the Account ID
@@ -17,7 +19,10 @@ echo -e -n "${GREEN_BLINK}[+] ${YELLOW_BOLD}Enter Account ID: ${RESET}"
 read account_id
 
 # Check if there are any active sessions
-if aws iam list-access-keys --query "AccessKeyMetadata[?Status=='Active'].AccessKeyId" --output text | grep -q . ; then
+caller_identity=$(aws sts get-caller-identity &> /dev/null)
+if [ -z "$caller_identity" ]; then
+    echo -e "${RED_BOLD}[!] Error: No Active Sessions!${RESET}"
+else
 	## Retrieving all the regions
 	regions=()
 	while IFS= read -r region; do
@@ -37,6 +42,4 @@ if aws iam list-access-keys --query "AccessKeyMetadata[?Status=='Active'].Access
 		echo -e "${RED_BLINK}[+]${RESET} ${RED_BOLD}Region: ${RED}$region ${RESET}"; 
 		aws rds describe-db-cluster-snapshots --snapshot-type public --include-public --region $region | grep $account_id; 
 	done     
-else
-    echo -e -n "${RED_BOLD}[!] No active sessions found! ${RESET}"
 fi
